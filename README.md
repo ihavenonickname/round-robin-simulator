@@ -6,8 +6,8 @@ This project has two dependencies: CPython interpreter and the Python binding fo
 You can download CPython 2.7.6 from here: https://www.python.org/download/releases/2.7.6/  
 You can download PyQt 4.8 from here https://www.riverbankcomputing.com/software/pyqt/download  
 
-To run the program, put controller.py and view.py in the same directory, be sure that Python is in your PATH and call view.py:  
-$ python -B view.py
+To run the program: Put the content of source folder in some directory, navigate to this folder, be sure that Python is in your PATH and call start-rr-simulator.py.  
+$ python -B start-rr-simulator.py
 
 Now, you're probably seeing the Setup Window. I'll explain it a bit:  
 
