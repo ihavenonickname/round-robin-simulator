@@ -122,10 +122,10 @@ class SimulatorWindow(QWidget):
         self.labels[0].setText('Current process: ' + processName)
 
         number = str(self.processesHandler.howManyRunsInCurrentProcess)
-        self.labels[1].setText('Runs in current process: ' + number)
+        self.labels[1].setText('How many runs in current process: ' + number)
 
         seconds = str(self.processesHandler.secondsSinceLastCreation)
         self.labels[2].setText('Seconds since last creation: ' + seconds)
 
         finished = str(self.processesHandler.processesFinished)
-        self.labels[3].setText('Total processes finished: ' + finished)
+        self.labels[3].setText('Processes finished: ' + finished)
