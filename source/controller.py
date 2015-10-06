@@ -19,8 +19,8 @@ class Process:
             return self.GOT_FINISHED
 
         if random.randint(1, 100) < self.chanceToRequestIO:
-            self.ciclesToBeReady = random.randint(self.lifeTime / 2,
-                                                  self.lifeTime)
+            self.ciclesToBeReady = random.randint(self.lifeTime,
+                                                  self.lifeTime * 3)
             return self.REQUESTED_IO
 
         return self.RAN_NORMALLY
@@ -55,7 +55,6 @@ class ProcessesHandler(QThread):
         self.currentName = 0
         self.running = True
         self.secondsSinceLastCreation = 99999
-        self.updateFunction = None
         self.processesFinished = 0
 
     def stop(self):
