@@ -19,8 +19,7 @@ class Process:
             return self.GOT_FINISHED
 
         if random.randint(1, 100) < self.chanceToRequestIO:
-            self.ciclesToBeReady = random.randint(self.lifeTime,
-                                                  self.lifeTime * 3)
+            self.ciclesToBeReady = random.randint(1, self.lifeTime * 3)
             return self.REQUESTED_IO
 
         return self.RAN_NORMALLY
