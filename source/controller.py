@@ -50,7 +50,7 @@ class ProcessesHandler(QThread):
         self.currentProcess = None
         self.ready = []
         self.waiting = []
-        self.howManyRunsInCurrentProcess = 0
+        self.ciclesInCurrentProcess = 0
         self.currentName = 0
         self.running = True
         self.secondsSinceLastCreation = 99999
@@ -70,10 +70,10 @@ class ProcessesHandler(QThread):
             self.runCurrentProcess()
             self.checkWaitingProcesses()
 
+            self.runCompleted.emit()
+            
             time.sleep(self.cicleDuration)
             self.secondsSinceLastCreation += self.cicleDuration
-
-            self.runCompleted.emit()
 
         print 'run stopped'
 
@@ -96,20 +96,20 @@ class ProcessesHandler(QThread):
                 return
 
         status = self.currentProcess.run()
-        self.howManyRunsInCurrentProcess += 1
+        self.ciclesInCurrentProcess += 1
 
         if status == Process.GOT_FINISHED:
             self.goNextProcess()
-            self.howManyRunsInCurrentProcess = 0
+            self.ciclesInCurrentProcess = 0
             self.processesFinished += 1
         elif status == Process.REQUESTED_IO:
             self.waiting.append(self.currentProcess)
             self.goNextProcess()
-            self.howManyRunsInCurrentProcess = 0
-        elif self.howManyRunsInCurrentProcess >= self.quantum:
+            self.ciclesInCurrentProcess = 0
+        elif self.ciclesInCurrentProcess >= self.quantum:
             self.ready.insert(0, self.currentProcess)
             self.goNextProcess()
-            self.howManyRunsInCurrentProcess = 0
+            self.ciclesInCurrentProcess = 0
 
     def goNextProcess(self):
         if self.ready:

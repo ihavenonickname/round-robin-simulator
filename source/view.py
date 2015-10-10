@@ -1,4 +1,5 @@
 from PyQt4.QtGui import *
+from PyQt4.Qt import *
 
 from controller import ProcessesHandler
 
@@ -68,32 +69,38 @@ class SimulatorWindow(QWidget):
 
         left = QVBoxLayout()
         self.waitingProcessesList = QListWidget()
-        left.addWidget(QLabel('Waiting'))
+        self.waitingLabel = QLabel('Waiting: 0')
+        left.addWidget(self.waitingLabel)
         left.addWidget(self.waitingProcessesList)
 
-        right = QVBoxLayout()
+        middle = QVBoxLayout()
         self.readyProcessesList = QListWidget()
-        right.addWidget(QLabel('Ready'))
-        right.addWidget(self.readyProcessesList)
+        self.readyLabel = QLabel('Ready')
+        middle.addWidget(self.readyLabel)
+        middle.addWidget(self.readyProcessesList)
 
-        top = QHBoxLayout()
-        top.addLayout(left)
-        top.addLayout(right)
-
-        bottom = QVBoxLayout()
+        right = QVBoxLayout()
         self.labels = []
-        self.labels.append(QLabel('current process'))
+        self.labels.append(QLabel('life time'))
         self.labels.append(QLabel('runs'))
         self.labels.append(QLabel('time to create'))
         self.labels.append(QLabel('finished'))
-        for label in self.labels:
-            label.setFont(QFont('Lucida Console', 20))
-            bottom.addWidget(label)
 
-        layout = QVBoxLayout()
-        layout.addLayout(top)
-        layout.addLayout(bottom)
+        right.addStretch(1)
+
+        for label in self.labels:
+            label.setFont(QFont('Lucida Console', 16))
+            right.addWidget(label)
+
+        right.addStretch(1)
+
+
+        layout = QHBoxLayout()
+        layout.addLayout(left)
+        layout.addLayout(middle)
+        layout.addLayout(right)
         self.setLayout(layout)
+
 
         self.processesHandler = ProcessesHandler(parent=self,
                                                 quantum=values[0],
@@ -110,22 +117,36 @@ class SimulatorWindow(QWidget):
         self.setupWindow.simulatorIsOpened = False
 
     def updateInfos(self):
+        self.updateLabels()
+        self.updateLists()
+
+    def updateLists(self):
         self.readyProcessesList.clear()
-        for p in self.processesHandler.ready:
-            self.readyProcessesList.addItem(str(p))
+        items = [str(p) for p in self.processesHandler.ready]
+        self.readyProcessesList.addItems(items)
 
         self.waitingProcessesList.clear()
-        for p in self.processesHandler.waiting:
-            self.waitingProcessesList.addItem(str(p))
+        items = [str(p) for p in self.processesHandler.waiting]
+        self.waitingProcessesList.addItems(items)
 
-        processName = str(self.processesHandler.currentProcess)
-        self.labels[0].setText('Current process: ' + processName)
+    def updateLabels(self):
+        processesReady = len(self.processesHandler.ready)
+        self.readyLabel.setText("Ready: %d" % processesReady)
 
-        number = str(self.processesHandler.howManyRunsInCurrentProcess)
-        self.labels[1].setText('How many runs in current process: ' + number)
+        processesWaiting = len(self.processesHandler.waiting)
+        self.waitingLabel.setText("Waiting: %d" % processesWaiting)
 
-        seconds = str(self.processesHandler.secondsSinceLastCreation)
-        self.labels[2].setText('Seconds since last creation: ' + seconds)
+        try:
+            lifeTime = str(self.processesHandler.currentProcess.lifeTime)
+        except:
+            lifeTime = ""
+        self.labels[0].setText("Current process' life time: " + lifeTime)
+
+        qnt = str(self.processesHandler.ciclesInCurrentProcess)
+        self.labels[1].setText('Cicles in current process: ' + qnt)
+
+        seconds = self.processesHandler.secondsSinceLastCreation
+        self.labels[2].setText("Seconds since last creation:%7.2f" % seconds)
 
         finished = str(self.processesHandler.processesFinished)
         self.labels[3].setText('Processes finished: ' + finished)
